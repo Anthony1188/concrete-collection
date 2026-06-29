@@ -167,6 +167,20 @@ function Index() {
   const environmentZoom = useTransform(cinematicProgress, [0, 0.6], [1.03, 1.18]);
   const darkness = useTransform(cinematicProgress, [0.7, 1], [0.08, 0.88]);
 
+  const shirtX1 = useTransform(installationSpread, (value) => value * -0.36);
+  const shirtX2 = useTransform(installationSpread, (value) => value * -0.18);
+  const shirtX3 = useTransform(installationSpread, (value) => value * 0);
+  const shirtX4 = useTransform(installationSpread, (value) => value * 0.19);
+  const shirtX5 = useTransform(installationSpread, (value) => value * 0.38);
+
+  const installationItems = [
+    { shirt: colorways[0], className: "shirt-pos-1", x: shirtX1, y: pointer.y * 12, pointerX: pointer.x * 18 },
+    { shirt: colorways[1], className: "shirt-pos-2", x: shirtX2, y: pointer.y * 10, pointerX: pointer.x * 20 },
+    { shirt: colorways[2], className: "shirt-pos-3", x: shirtX3, y: pointer.y * 8, pointerX: pointer.x * 22 },
+    { shirt: colorways[3], className: "shirt-pos-4", x: shirtX4, y: pointer.y * 6, pointerX: pointer.x * 24 },
+    { shirt: colorways[4], className: "shirt-pos-5", x: shirtX5, y: pointer.y * 4, pointerX: pointer.x * 26 },
+  ] as const;
+
   return (
     <main
       className="bg-background text-foreground"
@@ -243,41 +257,25 @@ function Index() {
               <motion.div className="installation-plane installation-plane-back" style={{ x: pointer.x * -18, y: pointer.y * -10 }} />
               <motion.div className="installation-plane installation-plane-mid" style={{ x: pointer.x * 12, y: pointer.y * 8 }} />
 
-              {colorways.map((shirt, index) => {
-                const positions = [
-                  "shirt-pos-1",
-                  "shirt-pos-2",
-                  "shirt-pos-3",
-                  "shirt-pos-4",
-                  "shirt-pos-5",
-                ];
-
-                return (
-                  <motion.img
-                    key={shirt.id}
-                    src={shirt.url}
-                    alt={`${shirt.shortLabel} heavyweight tee`}
-                    className={`installation-shirt ${positions[index]} ${shirt.shadowClass}`}
-                    style={{
-                      x: useTransform(installationSpread, (value) => {
-                        const offsets = [-0.36, -0.18, 0, 0.19, 0.38];
-                        return value * offsets[index] + pointer.x * (18 + index * 2);
-                      }),
-                      y: pointer.y * (12 - index * 1.5),
-                    }}
-                    animate={{
-                      y: [0, -8 - index, 0],
-                      rotate: [-0.4 + index * 0.18, 0.3 - index * 0.08, -0.4 + index * 0.18],
-                    }}
-                    transition={{
-                      duration: 13 + index,
-                      repeat: Number.POSITIVE_INFINITY,
-                      repeatType: "mirror",
-                      ease: "easeInOut",
-                    }}
-                  />
-                );
-              })}
+              {installationItems.map((item, index) => (
+                <motion.img
+                  key={item.shirt.id}
+                  src={item.shirt.url}
+                  alt={`${item.shirt.shortLabel} heavyweight tee`}
+                  className={`installation-shirt ${item.className} ${item.shirt.shadowClass}`}
+                  style={{ x: item.x, y: item.y, translateX: item.pointerX }}
+                  animate={{
+                    y: [item.y, item.y - (8 + index), item.y],
+                    rotate: [-0.4 + index * 0.18, 0.3 - index * 0.08, -0.4 + index * 0.18],
+                  }}
+                  transition={{
+                    duration: 13 + index,
+                    repeat: Number.POSITIVE_INFINITY,
+                    repeatType: "mirror",
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
             </div>
 
             <div className="grid gap-8 border-t border-border/50 pt-5 sm:grid-cols-3 lg:max-w-[62rem]">
